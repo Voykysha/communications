@@ -1,9 +1,13 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voykysha communications</title>
+    
+    <!-- Предзагрузка и кэширование -->
+    <link rel="preload" href="https://images4.imagebam.com/a4/b2/16/ME17PNYI_o.png" as="image">
+    <meta http-equiv="Cache-Control" content="max-age=31536000">
+    
     <style>
         * {
             margin: 0;
@@ -20,6 +24,12 @@
             align-items: center;
             min-height: 100vh;
             position: relative;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
         
         /* Фоновая картинка с блюром */
@@ -242,5 +252,40 @@
             
         </div>
     </div>
+
+    <script>
+        // Предзагрузка изображения и показ контента после загрузки
+        document.addEventListener('DOMContentLoaded', function() {
+            const bgImage = new Image();
+            bgImage.src = 'https://images4.imagebam.com/a4/b2/16/ME17PNYI_o.png';
+            
+            // Показываем контент сразу, но с анимацией
+            document.body.style.animation = 'fadeIn 0.5s ease forwards';
+            
+            // Если изображение загружено быстро - сразу показываем
+            if (bgImage.complete) {
+                document.body.style.animation = 'fadeIn 0.5s ease forwards';
+            } else {
+                // Если грузится медленно, ждем загрузки
+                bgImage.onload = function() {
+                    document.body.style.animation = 'fadeIn 0.5s ease forwards';
+                };
+                
+                // На всякий случай - показываем через 3 секунды максимум
+                setTimeout(function() {
+                    document.body.style.animation = 'fadeIn 0.5s ease forwards';
+                }, 3000);
+            }
+            
+            // Сохраняем в localStorage факт загрузки для кэширования
+            localStorage.setItem('bgImageLoaded', 'true');
+        });
+        
+        // При повторном посещении сразу показываем контент
+        if (localStorage.getItem('bgImageLoaded') === 'true') {
+            document.body.style.opacity = '1';
+            document.body.style.animation = 'none';
+        }
+    </script>
 </body>
 </html>
